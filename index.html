@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipografía y Texto en CSS</title>
+    <style>
+        /* === ESTILOS GLOBALES (DARK MODE POR DEFECTO) === */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .slideshow-container { position: relative; width: 90%; max-width: 960px; }
+        
+        .slide {
+            display: none;
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            height: 560px; 
+            padding: 40px 60px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            flex-direction: column; justify-content: center; position: relative;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .fade { animation-name: fade; animation-duration: 0.5s; }
+        @keyframes fade { from {opacity: .4} to {opacity: 1} }
+
+        .prev, .next {
+            cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%);
+            width: 50px; height: 50px; background-color: #333; color: #f1f1f1;
+            border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 24px; transition: all 0.3s ease;
+            user-select: none; z-index: 10;
+        }
+        .prev:hover, .next:hover { background-color: #555; }
+        .prev { left: -70px; }
+        .next { right: -70px; }
+
+        /* === CAMBIO DE COLOR: AZUL MÁS CLARO (#4fc3f7) === */
+        .slide h1 { 
+            font-size: 3.5em; 
+            text-align: center; 
+            border-bottom: 4px solid #4fc3f7; /* Azul claro */
+            padding-bottom: 20px; 
+            color: #4fc3f7; /* Azul claro */
+        }
+        .slide h2 { 
+            font-size: 2.6em; 
+            margin: 0 0 30px; 
+            text-align: center; 
+            color: #4fc3f7; /* Azul claro */
+        }
+        
+        .single-content p { font-size: 1.3em; color: #cccccc; text-align: center; margin-bottom: 20px; line-height: 1.6; }
+        
+        pre { width: 90%; max-width: 750px; margin: 0 auto; background-color: #263238; color: #eceff1; padding: 20px; border-radius: 8px; font-size: 1.1em; white-space: pre-wrap; border: 1px solid #37474f; text-align: left; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+        
+        code { font-family: 'Consolas', 'Monaco', monospace; color: #80cbc4; }
+        .comment { color: #78909c; font-style: italic; }
+        .prop { color: #c792ea; } /* Lila para propiedades */
+        .val { color: #c3e88d; }  /* Verde claro para valores */
+
+        .footer { position: absolute; bottom: 20px; right: 40px; font-size: 1em; color: #888; }
+        .subtitle { color: #b0bec5; font-size: 1.8em; font-weight: 300; margin: 0 0 30px; text-align: center; letter-spacing: 1px; }
+        
+        /* === ESTILOS DEL SWITCH DE TEMA === */
+        .theme-switch-wrapper { position: fixed; top: 15px; right: 15px; z-index: 100; }
+        #theme-switch {
+            cursor: pointer; padding: 8px 12px; border-radius: 20px;
+            border: 1px solid #555; background-color: #333; color: #f1f1f1;
+            font-size: 0.9em; transition: all 0.3s ease;
+        }
+        #theme-switch:hover { background-color: #555; }
+
+        /* === ESTILOS DEL LIGHT MODE === */
+        body.light-mode { background-color: #f5f7fa; color: #333; }
+        body.light-mode .slide { background-color: #fff; border-color: #d1d9e6; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        /* Azul vibrante pero legible en blanco para Light Mode */
+        body.light-mode .slide h1 { color: #0288d1; border-color: #0288d1; }
+        body.light-mode .slide h2 { color: #0288d1; }
+        
+        body.light-mode .subtitle { color: #546e7a; }
+        body.light-mode .single-content p { color: #455a64; }
+        body.light-mode pre { background-color: #eceff1; border-color: #cfd8dc; color: #263238; }
+        body.light-mode code { color: #00695c; }
+        body.light-mode .comment { color: #90a4ae; }
+        body.light-mode .prop { color: #7b1fa2; }
+        body.light-mode .val { color: #2e7d32; }
+
+        body.light-mode .prev, body.light-mode .next { background-color: #e0e0e0; color: #333; }
+        body.light-mode .prev:hover, body.light-mode .next:hover { background-color: #bdbdbd; }
+        body.light-mode #theme-switch { background-color: #fff; color: #333; border-color: #ccc; }
+        body.light-mode #theme-switch:hover { background-color: #eee; }
+
+        /* === MEDIA QUERIES === */
+        @media screen and (max-width: 768px) {
+            body { padding: 15px; }
+            .slideshow-container { width: 100%; padding-bottom: 75px; }
+            .slide { height: auto; min-height: 75vh; padding: 20px 25px; }
+            .prev, .next { top: auto; bottom: 15px; width: 45px; height: 45px; }
+            .prev { left: 50%; transform: translateX(-110%); }
+            .next { left: 50%; transform: translateX(10%); right: auto; }
+            .slide h1 { font-size: 2.2em; }
+            .slide h2 { font-size: 1.8em; }
+            .single-content p { font-size: 1.1em; }
+            pre { font-size: 0.9em; }
+            .footer { font-size: 0.8em; right: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="theme-switch-wrapper">
+        <button id="theme-switch">Light Mode</button>
+    </div>
+
+    <div class="slideshow-container">
+        
+        <!-- =============================================================== -->
+        <!-- INICIO DE DIAPOSITIVAS: FUENTES Y TEXTO -->
+        <!-- =============================================================== -->
+
+        <div class="slide fade">
+            <h1>Cheat Sheet de CSS</h1>
+            <div class="subtitle">Propiedades de los textos</div>
+            <div class="footer">1 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>La Familia Tipográfica</h2>
+            <div class="single-content">
+                <p>Define qué fuente se usará. Siempre se recomienda incluir una "pila" (stack) de fuentes por si la primera no carga.</p>
+                <pre><code>body {
+  <span class="comment">/* Intenta usar Helvetica, si no está, usa Arial, 
+     si no, usa cualquier sans-serif del sistema */</span>
+  <span class="prop">font-family</span>: <span class="val">"Helvetica Neue", Arial, sans-serif</span>;
+}
+
+h1 {
+  <span class="prop">font-family</span>: <span class="val">"Georgia", serif</span>;
+}</code></pre>
+            </div>
+            <div class="footer">2 / 16</div>
+        </div>
+        
+        <div class="slide fade">
+            <h2>Tipos Genéricos de Fuentes</h2>
+            <div class="single-content">
+                <p>Son los mecanismos de seguridad de CSS. Deben ir siempre al final de tu declaración <code>font-family</code>.</p>
+                <pre><code><span class="prop">font-family</span>: <span class="val">serif</span>;      <span class="comment">/* Tienen remates (ej: Times New Roman) */</span>
+<span class="prop">font-family</span>: <span class="val">sans-serif</span>; <span class="comment">/* Sin remates, modernas (ej: Arial) */</span>
+<span class="prop">font-family</span>: <span class="val">monospace</span>;  <span class="comment">/* Ancho fijo (ej: Consolas, Código) */</span>
+<span class="prop">font-family</span>: <span class="val">cursive</span>;    <span class="comment">/* Estilo manuscrito (ej: Comic Sans) */</span>
+<span class="prop">font-family</span>: <span class="val">fantasy</span>;    <span class="comment">/* Decorativas (Poco uso profesional) */</span></code></pre>
+            </div>
+            <div class="footer">3 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Grosor de la Fuente (Weight)</h2>
+            <div class="single-content">
+                <p>Controla qué tan "gruesa" o "fina" se ve la letra. Puede usar palabras clave o números (100 a 900).</p>
+                <pre><code>p {
+  <span class="prop">font-weight</span>: <span class="val">normal</span>; <span class="comment">/* Equivale a 400 */</span>
+}
+
+strong {
+  <span class="prop">font-weight</span>: <span class="val">bold</span>;   <span class="comment">/* Equivale a 700 */</span>
+}
+
+h1 {
+  <span class="prop">font-weight</span>: <span class="val">900</span>;    <span class="comment">/* Extra Bold / Black */</span>
+}</code></pre>
+            </div>
+            <div class="footer">4 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Estilo de Fuente (Style)</h2>
+            <div class="single-content">
+                <p>Principalmente utilizado para poner el texto en <em>cursiva</em>.</p>
+                <pre><code>em {
+  <span class="prop">font-style</span>: <span class="val">italic</span>;
+}
+
+<span class="comment">/* 'oblique' es similar a italic, pero es una 
+   inclinación artificial si la fuente no tiene cursiva real */</span>
+.inclinado {
+  <span class="prop">font-style</span>: <span class="val">oblique</span>; 
+}</code></pre>
+            </div>
+            <div class="footer">5 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Alineación de Texto</h2>
+            <div class="single-content">
+                <p>Controla la alineación horizontal del texto dentro de su contenedor.</p>
+                <pre><code>h1 {
+  <span class="prop">text-align</span>: <span class="val">center</span>;
+}
+
+p {
+  <span class="prop">text-align</span>: <span class="val">justify</span>; <span class="comment">/* Crea bordes rectos a izq y der */</span>
+}
+
+.nota {
+  <span class="prop">text-align</span>: <span class="val">right</span>;
+}</code></pre>
+            </div>
+            <div class="footer">6 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Decoración de Texto</h2>
+            <div class="single-content">
+                <p>Se usa para líneas decorativas. Muy común para eliminar el subrayado de los enlaces.</p>
+                <pre><code>a {
+  <span class="prop">text-decoration</span>: <span class="val">none</span>; <span class="comment">/* Quita el subrayado */</span>
+}
+
+del {
+  <span class="prop">text-decoration</span>: <span class="val">line-through</span>; <span class="comment">/* Tachado */</span>
+}
+
+u {
+  <span class="prop">text-decoration</span>: <span class="val">underline</span>; <span class="comment">/* Subrayado */</span>
+}</code></pre>
+            </div>
+            <div class="footer">7 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Transformación de Texto</h2>
+            <div class="single-content">
+                <p>Cambia las mayúsculas y minúsculas visualmente (sin cambiar el HTML).</p>
+                <pre><code>h2 {
+  <span class="prop">text-transform</span>: <span class="val">uppercase</span>; <span class="comment">/* TODO MAYÚSCULAS */</span>
+}
+
+.usuario {
+  <span class="prop">text-transform</span>: <span class="val">capitalize</span>; <span class="comment">/* La Primera Letra Mayúscula */</span>
+}
+
+.pequeno {
+  <span class="prop">text-transform</span>: <span class="val">lowercase</span>; <span class="comment">/* todo minúsculas */</span>
+}</code></pre>
+            </div>
+            <div class="footer">8 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Altura de Línea (Line Height)</h2>
+            <div class="single-content">
+                <p>Fundamental para la legibilidad. Define el espacio vertical entre líneas de texto. Se recomienda usar valores sin unidad.</p>
+                <pre><code>p {
+  <span class="comment">/* 1.5 veces el tamaño de la fuente actual. 
+     Es el estándar de oro para párrafos legibles. */</span>
+  <span class="prop">line-height</span>: <span class="val">1.5</span>; 
+}
+
+h1 {
+  <span class="comment">/* Títulos grandes necesitan menos altura de línea */</span>
+  <span class="prop">line-height</span>: <span class="val">1.1</span>;
+}</code></pre>
+            </div>
+            <div class="footer">9 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Espaciado de Letras y Palabras</h2>
+            <div class="single-content">
+                <p>Ajuste fino del espacio horizontal (Tracking).</p>
+                <pre><code>h3 {
+  <span class="comment">/* Espacio entre caracteres */</span>
+  <span class="prop">letter-spacing</span>: <span class="val">2px</span>;
+}
+
+p {
+  <span class="comment">/* Espacio entre palabras */</span>
+  <span class="prop">word-spacing</span>: <span class="val">5px</span>;
+}</code></pre>
+            </div>
+            <div class="footer">10 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Sombra de Texto (Text Shadow)</h2>
+            <div class="single-content">
+                <p>Añade sombras a las letras. Sintaxis: <code>offset-x offset-y blur color</code>.</p>
+                <pre><code>h1 {
+  <span class="comment">/* 2px derecha, 2px abajo, 4px difuminado, negro */</span>
+  <span class="prop">text-shadow</span>: <span class="val">2px 2px 4px rgba(0,0,0,0.5)</span>;
+}
+
+.neon {
+  <span class="comment">/* Efecto brillo */</span>
+  <span class="prop">text-shadow</span>: <span class="val">0 0 10px #4fc3f7</span>;
+}</code></pre>
+            </div>
+            <div class="footer">11 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Texto Desbordado (Truncar)</h2>
+            <div class="single-content">
+                <p>Un truco esencial para cortar texto largo con "tres puntos" (...).</p>
+                <pre><code>.tarjeta-titulo {
+  <span class="prop">white-space</span>: <span class="val">nowrap</span>;      <span class="comment">/* No saltar de línea */</span>
+  <span class="prop">overflow</span>: <span class="val">hidden</span>;         <span class="comment">/* Ocultar lo que sobra */</span>
+  <span class="prop">text-overflow</span>: <span class="val">ellipsis</span>;  <span class="comment">/* Poner los "..." */</span>
+  
+  <span class="prop">width</span>: <span class="val">200px</span>;
+}</code></pre>
+            </div>
+            <div class="footer">12 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Web Fonts (Google Fonts)</h2>
+            <div class="single-content">
+                <p>No estás limitado a las fuentes del sistema. Puedes importar fuentes externas.</p>
+                <pre><code><span class="comment">/* En tu CSS (al principio) */</span>
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+<span class="comment">/* O en tu HTML (recomendado por performance) */</span>
+&lt;link href="https://fonts..." rel="stylesheet"&gt;
+
+<span class="comment">/* Uso */</span>
+body {
+  <span class="prop">font-family</span>: <span class="val">'Roboto', sans-serif</span>;
+}</code></pre>
+            </div>
+            <div class="footer">13 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Atajo: La propiedad `font`</h2>
+            <div class="single-content">
+                <p>Puedes resumir muchas propiedades en una sola línea. El orden importa: <code>style weight size/line-height family</code>.</p>
+                <pre><code><span class="comment">/* Manera larga */</span>
+p {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+}
+
+<span class="comment">/* Manera corta (Shorthand) */</span>
+p {
+  <span class="prop">font</span>: <span class="val">italic bold 16px/1.5 Arial, sans-serif</span>;
+}</code></pre>
+            </div>
+            <div class="footer">14 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Unidades Relativas en Texto</h2>
+            <div class="single-content">
+                <p>Es mejor usar unidades relativas para accesibilidad.</p>
+                <pre><code>html {
+  <span class="prop">font-size</span>: <span class="val">16px</span>; <span class="comment">/* Base */</span>
+}
+
+h1 {
+  <span class="prop">font-size</span>: <span class="val">2rem</span>;   <span class="comment">/* 2 x 16px = 32px */</span>
+}
+
+p {
+  <span class="prop">font-size</span>: <span class="val">1rem</span>;   <span class="comment">/* 16px */</span>
+}
+<span class="comment">/* Si el usuario cambia el tamaño base en su navegador,
+   todo el sitio se escala proporcionalmente. */</span></code></pre>
+            </div>
+            <div class="footer">15 / 16</div>
+        </div>
+
+        <div class="slide fade">
+            <h2>Conclusión</h2>
+            <div class="single-content">
+                <p>El texto es el 90% de la web. Una buena tipografía mejora la experiencia de usuario (UX) y la accesibilidad.</p>
+                <pre><code>// Resumen:
+1. Elige una buena familia tipográfica.
+2. Asegura un buen contraste de color.
+3. Usa 'line-height' generoso para párrafos.
+4. No abuses de las mayúsculas ni del centrado.</code></pre>
+            </div>
+            <div class="footer">16 / 16</div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- FIN DEL CONTENIDO DE LAS DIAPOSITIVAS -->
+        <!-- =============================================================== -->
+
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <!-- Lógica de JavaScript -->
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            if (n > slides.length) { slideIndex = 1 } 
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "flex";
+        }
+
+        // Switch Tema
+        const themeSwitch = document.getElementById('theme-switch');
+        const body = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                themeSwitch.textContent = 'Dark Mode';
+            } else {
+                body.classList.remove('light-mode');
+                themeSwitch.textContent = 'Light Mode';
+            }
+        }
+
+        themeSwitch.addEventListener('click', () => {
+            let currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+            let newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; 
+            applyTheme(savedTheme);
+        });
+
+        // Teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') { plusSlides(-1); } 
+            else if (event.key === 'ArrowRight') { plusSlides(1); }
+        });
+    </script>
+
+</body>
+</html>
